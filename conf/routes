@@ -1,0 +1,61 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Get Routes for Site homepage and assets
+GET     /                           controllers.HomeController.index
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+POST    /api/hivewriter             controllers.SqlQueriesController.queryRunOnce
+POST    /api/sparkelasticsearch     controllers.SqlQueriesController.queryRunOnce
+POST    /api/sparkhive              controllers.SqlQueriesController.queryRunOnce
+POST    /api/queryRunOnce           controllers.SqlQueriesController.queryRunOnce
+POST    /api/sparkstats             controllers.SqlQueriesController.stats
+
+POST    /api/onetimeschedule    controllers.SqoopImportsController.runOnce
+DELETE  /api/abortSqoopJob           controllers.SqoopImportsController.abort
+DELETE  /api/abortQuery           controllers.SqlQueriesController.abort
+
+POST    /api/ingestionjob/:ingestionId    controllers.IngestionJobsController.run(ingestionId: String)
+DELETE  /api/ingestionjob/:ingestionId    controllers.IngestionJobsController.abort(ingestionId: String)
+
+POST /api/schedule          controllers.AgendaJobsController.dispatch(action="schedule")
+POST /api/pauseschedule     controllers.AgendaJobsController.dispatch(action="pause")
+POST /api/cancelschedule    controllers.AgendaJobsController.dispatch(action="cancel")
+
+POST /api/dropquery             controllers.DataSinkController.dropTable(sink="Query")
+POST /api/dropdatamart          controllers.DataSinkController.dropTable(sink="DataMart")
+POST /api/dropdatalake          controllers.DataSinkController.dropTable(sink="DataLake")
+
+POST /api/schedulerfileupload/:dataMartId   controllers.UploadsController.upload(dataMartId: String)
+POST /api/odataimport/:dataMartId   controllers.UploadsController.oDataImport(dataMartId: String)
+
+POST /api/createhiveschema      controllers.GroupsController.createSchema
+
+GET /api/hanaconn/:confId/tables        controllers.SapHanaController.getTables(confId: String)
+GET /api/hanaconn/:confId/toprows       controllers.SapHanaController.getTopRows(confId: String, table_name: String)
+
+GET /api/kdbconn/:confId/tables         controllers.KDBController.getTables(confId: String)
+GET /api/kdbconn/:confId/toprows        controllers.KDBController.getTopRows(confId: String, table_name: String)
+
+GET /api/:source/:confId/schemas         controllers.CommonJDBCController.getSchemas(source: String, confId: String)
+GET /api/:source/:confId/tables         controllers.CommonJDBCController.getTables(source: String, confId: String, schema_name: String)
+GET /api/:source/:confId/toprows       controllers.CommonJDBCController.getTopRows(source: String, confId: String, schema_name: String, table_name: String)
+GET /api/:source/:confId/tablemetadata       controllers.CommonJDBCController.getMetaData(source: String, confId: String, schema_name: String, table_name: String)
+
+GET /api/hiveschemas             controllers.HiveController.getSchemas(run_as: Option[String])
+GET /api/hivetables             controllers.HiveController.getTables(schema_name: String, run_as: Option[String])
+GET /api/hivetoprows             controllers.HiveController.getTopRows(schema_name: String, table_name: String, run_as: Option[String])
+GET /api/hivetablemetadata      controllers.HiveController.getTableMetaData(schema_name: String, table_name: String, run_as: Option[String])
+
+POST /api/hivecsvexport/:exportId         controllers.HiveExportsController.csvExport(exportId: String)
+
+POST    /api/sparkworkflows/:workflowId/sessions                controllers.SparkWorkflowsController.createSession(workflowId: String)
+GET     /api/sparkworkflows/:workflowId/sessions/:sessionId     controllers.SparkWorkflowsController.getSession(workflowId: String, sessionId: String)
+DELETE  /api/sparkworkflows/:workflowId/sessions/:sessionId     controllers.SparkWorkflowsController.deleteSession(workflowId: String, sessionId: String)
+
+GET     /api/sparkworkflows/:workflowId/sessions/:sessionId/nodes/:orderId/outputs/:outputId/preview    controllers.SparkWorkflowsController.getDFPreview(workflowId: String, sessionId: Int, orderId: Int, outputId: Int)
+
+POST    /api/sparkworkflows/:workflowId/sessions/:sessionId/statements  controllers.SparkWorkflowsController.createStatement(workflowId: String, sessionId: String)
+GET     /api/sparkworkflows/:workflowId/sessions/:sessionId/statements/:statementId     controllers.SparkWorkflowsController.getStatement(workflowId: String, sessionId: String, statementId: String)
+POST     /api/sparkworkflows/:workflowId/sessions/:sessionId/enablelineage              controllers.SparkWorkflowsController.enableLineage(workflowId: String, sessionId: String)

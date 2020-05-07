@@ -1,0 +1,13 @@
+# Ignore Play! working directory #
+.eclipse/
+logs/
+tmp/
+dist/
+.cache
+.vscode
+project/target/
+project/project/
+target/
+lib_managed/
+application.conf
+.idea/
